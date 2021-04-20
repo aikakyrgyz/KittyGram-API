@@ -6,6 +6,8 @@ from .permissions import IsOwnerOrReadOnly, IsOwnerOrPostOwnerOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import action
+from django.db.models import Q
+
 '''CREATE POST --- POST'''
 # localhost:8000/api/post/
 class PostViewSet(viewsets.ModelViewSet):
@@ -23,6 +25,16 @@ class PostViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset()
         queryset = queryset.filter(author=request.user)
         serializer = PostSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    #search
+    @action(detail=False, methods=['get'])
+    def search(self, request, pk=None):
+        # print(request.query_params)
+        q = request.query_params.get('q')
+        queryset = self.get_queryset()
+        queryset = queryset.filter(Q(text__icontains=q)|Q(location__icontains=q))
+        serializer = PostSerializer(queryset, many=True, context={'request':request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 '''LENTA --- GET '''
