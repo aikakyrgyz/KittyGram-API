@@ -5,7 +5,7 @@ from .models import Post, Comment
 from .permissions import IsOwnerOrReadOnly, IsOwnerOrPostOwnerOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework.decorators import action
 '''CREATE POST --- POST'''
 # localhost:8000/api/post/
 class PostViewSet(viewsets.ModelViewSet):
@@ -16,6 +16,14 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    #filtering by my posts using action decorator, url -> v1/api/post/own/
+    @action(detail=False, methods=['get'])
+    def own(self, request, pk=None):
+        queryset = self.get_queryset()
+        queryset = queryset.filter(author=request.user)
+        serializer = PostSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 '''LENTA --- GET '''
 class UserFeedView(generics.ListAPIView):
