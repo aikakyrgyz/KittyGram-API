@@ -7,6 +7,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import action
 from django.db.models import Q
+from django.utils import timezone
+from datetime import timedelta
+
 
 '''CREATE POST --- POST'''
 # localhost:8000/api/post/
@@ -18,6 +21,19 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+    # filtering using queryset by the date
+    @action(detail=False, methods=['get'])
+    def recent(self, request, pk=None):
+        queryset = self.queryset
+        days_count = int(self.request.query_params.get('days', default=0))
+        if days_count > 0:
+            start_date = timezone.now() - timedelta(days=days_count)
+            queryset = queryset.filter(created_at__gte=start_date)
+        serializer = PostSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     #filtering by my posts using action decorator, url -> v1/api/post/own/
     @action(detail=False, methods=['get'])
