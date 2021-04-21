@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
-from .serializers import RegisterUserSerializer, LoginUserSerializer, UserInfoSerializer, UserProfileSerializer, FollowSerializer
+from .serializers import RegisterUserSerializer, LoginUserSerializer, UserInfoSerializer, UserProfileSerializer, FollowSerializer, CreateNewPasswordSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -9,6 +9,8 @@ from rest_framework import generics, permissions
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
+from .utils import send_activation_email
+
 
 
 '''PAGINATION'''
@@ -153,3 +155,25 @@ class GetFollowingView(generics.ListAPIView):
         queryset = get_user_model().objects.get(
             username=username).following.all()
         return queryset
+
+
+#api/v1/account/forgot_password/
+class ForgotPassword(APIView):
+    def get(self, request):
+        email = request.query_params.get('email')
+        User = get_user_model()
+        user = get_object_or_404(User, email=email)
+        user.is_active = False
+        user.create_activation_code()
+        user.save()
+        send_activation_email(email=email, activation_code=user.activation_code)
+        return Response('Activation code has been sent to your email', status=status.HTTP_200_OK)
+
+
+class ForgotPasswordComplete(APIView):
+    def post(self, request):
+        data = request.data
+        serializer = CreateNewPasswordSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response('You have successfully reset your password', status=status.HTTP_200_OK)

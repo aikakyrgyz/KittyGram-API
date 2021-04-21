@@ -38,7 +38,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ('id', 'author',  'photo',
                   'text', 'location', 'posted_on',
                   'number_of_likes', 'number_of_comments',
-                  'post_comments', 'liked_by_req_user', 'favorited_by_req_user', )
+                  'post_comments', 'liked_by_req_user', 'favorited_by_req_user',)
 
     def get_number_of_comments(self, obj):
         return Comment.objects.filter(post=obj).count()

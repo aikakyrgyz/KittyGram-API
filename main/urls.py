@@ -14,4 +14,6 @@ urlpatterns = [
     path('like/<uuid:post_id>/', LikeView.as_view(), name='like'),
     path('<uuid:post_id>/get-likers/', GetLikersView.as_view(), name='get-likers'),
     path('favorite/<uuid:post_id>/', FavoriteView.as_view(), name='favorite'),
-    ]
+    path('<uuid:post_id>/get-favoriters/', GetFavoritersView.as_view(), name='get-favoriters'),
+
+]

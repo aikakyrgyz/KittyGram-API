@@ -2,6 +2,8 @@ from django.db import models
 import uuid
 from django.conf import settings
 from account.models import image_file_path
+from account.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Post(models.Model):
@@ -28,6 +30,18 @@ class Post(models.Model):
                                        related_name='favoriters',
                                        blank=True,
                                        symmetrical=False)
+    # average_rating = models.IntegerField(default=0)
+    #
+    # def calculate_ave_rating(self):
+    #     num_rating = len(Rating.objects.filter(post=self))
+    #     sum=0
+    #     ratings = Rating.objects.filter(self)
+    #     for rating in ratings:
+    #         sum += rating
+    #         if len(ratings > 0):
+    #             self.average_rating = sum // len(rating)
+    #         else:
+    #             self.average_rating = 0
 
     class Meta:
         ordering = ['-posted_on']
@@ -57,3 +71,12 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.author}\'s comment'
+
+
+# class Rating(models.Model):
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+#
+#     def __str__(self):
+#         return str(self.product)+"---"+str(self.user)

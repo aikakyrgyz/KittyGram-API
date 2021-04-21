@@ -154,3 +154,23 @@ class GetLikersView(generics.ListAPIView):
         return queryset
 
 
+'''GET THE LIST OF FAVORITERS --- GET '''
+class GetFavoritersView(generics.ListAPIView):
+    serializer_class = AuthorSerializer
+    pagination_class = FollowersLikersPagination
+    permission_classes = (permissions.AllowAny,)
+
+    def get_queryset(self):
+        post_id = self.kwargs['post_id']
+        queryset = Post.objects.get(
+            pk=post_id).favorites.all()
+        return queryset
+
+# class RateView(APIView):
+#     def get(self, request, format=None, post_id=None):
+#         post = Post.objects.get(pk=post_id)
+#         user = self.request.user
+#
+#
+
+
