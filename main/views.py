@@ -59,8 +59,21 @@ class UserFeedView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        print(user)
         following_users = user.following.all()
         queryset = Post.objects.all().filter(author__in=following_users)
+        return queryset
+
+
+'''GET THE LIST OF FAVORITE POSTS --- GET '''
+class UserFavoritesView(generics.ListAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        favorited_posts = user.favoriters.all()
+        queryset = Post.objects.all().filter(pk__in=favorited_posts)
+        print(queryset)
         return queryset
 
 
@@ -110,6 +123,24 @@ class LikeView(APIView):
         return Response(data)
 
 
+'''FAVORITE/UNFAVORITE POST --- GET '''
+class FavoriteView(APIView):
+    def get(self, request, format=None, post_id=None):
+        post = Post.objects.get(pk=post_id)
+        user = self.request.user
+        if user.is_authenticated:
+            if user in post.favorites.all():
+                favorite = False
+                post.favorites.remove(user)
+            else:
+                favorite = True
+                post.favorites.add(user)
+            data = {
+                'favorite': favorite
+            }
+            return Response(data)
+
+
 '''GET THE LIST OF LIKERS --- GET '''
 class GetLikersView(generics.ListAPIView):
     serializer_class = AuthorSerializer
@@ -121,4 +152,5 @@ class GetLikersView(generics.ListAPIView):
         queryset = Post.objects.get(
             pk=post_id).likes.all()
         return queryset
+
 

@@ -31,13 +31,14 @@ class PostSerializer(serializers.ModelSerializer):
     post_comments = serializers.SerializerMethodField(
         'paginated_post_comments')
     liked_by_req_user = serializers.SerializerMethodField()
+    favorited_by_req_user = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = ('id', 'author',  'photo',
                   'text', 'location', 'posted_on',
                   'number_of_likes', 'number_of_comments',
-                  'post_comments', 'liked_by_req_user')
+                  'post_comments', 'liked_by_req_user', 'favorited_by_req_user', )
 
     def get_number_of_comments(self, obj):
         return Comment.objects.filter(post=obj).count()
@@ -55,3 +56,7 @@ class PostSerializer(serializers.ModelSerializer):
     def get_liked_by_req_user(self, obj):
         user = self.context['request'].user
         return user in obj.likes.all()
+
+    def get_favorited_by_req_user(self, obj):
+        user = self.context['request'].user
+        return user in obj.favorites.all()

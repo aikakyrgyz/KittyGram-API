@@ -24,6 +24,10 @@ class Post(models.Model):
                                    related_name="likers",
                                    blank=True,
                                    symmetrical=False)
+    favorites = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                       related_name='favoriters',
+                                       blank=True,
+                                       symmetrical=False)
 
     class Meta:
         ordering = ['-posted_on']
