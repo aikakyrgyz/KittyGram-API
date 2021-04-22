@@ -1,7 +1,7 @@
 from rest_framework import permissions, viewsets, generics, status
-from .serializers import PostSerializer, CommentSerializer, AuthorSerializer
+from .serializers import PostSerializer, CommentSerializer, AuthorSerializer, RatingSerializer
 from account.views import FollowersLikersPagination
-from .models import Post, Comment
+from .models import Post, Comment, Rating
 from .permissions import IsOwnerOrReadOnly, IsOwnerOrPostOwnerOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,6 +9,8 @@ from rest_framework.decorators import action
 from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
+from rest_framework import viewsets, mixins
+from rest_framework.permissions import IsAuthenticated
 
 
 '''CREATE POST --- POST'''
@@ -56,6 +58,7 @@ class PostViewSet(viewsets.ModelViewSet):
 '''LENTA --- GET '''
 class UserFeedView(generics.ListAPIView):
     serializer_class = PostSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
         user = self.request.user
@@ -68,6 +71,7 @@ class UserFeedView(generics.ListAPIView):
 '''GET THE LIST OF FAVORITE POSTS --- GET '''
 class UserFavoritesView(generics.ListAPIView):
     serializer_class = PostSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
         user = self.request.user
@@ -94,7 +98,8 @@ class AddCommentView(generics.CreateAPIView):
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-'''CHANGE POST --- GET, PATCH, DELETE '''
+
+'''CHANGE commentT --- GET, PATCH, DELETE '''
 class ManageCommentView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
     lookup_url_kwarg = 'comment_id'
@@ -166,11 +171,26 @@ class GetFavoritersView(generics.ListAPIView):
             pk=post_id).favorites.all()
         return queryset
 
-# class RateView(APIView):
-#     def get(self, request, format=None, post_id=None):
-#         post = Post.objects.get(pk=post_id)
-#         user = self.request.user
-#
-#
 
+
+class RatingViewSet(generics.CreateAPIView):
+    serializer_class = RatingSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
+
+
+    def post(self, request, post_id=None):
+        post = Post.objects.get(pk=post_id)
+        user = self.request.user
+        post_rating = Rating.objects.filter(post=post, user=user)
+        if not post_rating:
+            serializer = RatingSerializer(data=request.data)
+
+            if serializer.is_valid():
+                serializer.save(post=post, user=request.user)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(
+                    serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response('You have already rated this post', status=status.HTTP_403_FORBIDDEN)
 

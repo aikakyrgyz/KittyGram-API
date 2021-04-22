@@ -73,10 +73,10 @@ class Comment(models.Model):
         return f'{self.author}\'s comment'
 
 
-# class Rating(models.Model):
-#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-#
-#     def __str__(self):
-#         return str(self.product)+"---"+str(self.user)
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_ratings')
+    rating = models.PositiveSmallIntegerField(default=0)
+
+    def __str__(self):
+        return str(self.post)+"---"+str(self.user)

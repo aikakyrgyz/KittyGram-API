@@ -105,6 +105,7 @@ class UserPostsSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('id', 'photo', 'text', 'location', 'number_of_likes',
                   'number_of_comments', 'posted_on')
+        ordering = [id]
 
     def get_number_of_comments(self, obj):
         return Comment.objects.filter(post=obj).count()
