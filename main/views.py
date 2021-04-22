@@ -112,6 +112,7 @@ class ManageCommentView(generics.RetrieveUpdateDestroyAPIView):
 
 '''LIKE/UNLIKE POST --- GET '''
 class LikeView(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     def get(self, request, format=None, post_id=None):
         post = Post.objects.get(pk=post_id)
         user = self.request.user
@@ -130,6 +131,7 @@ class LikeView(APIView):
 
 '''FAVORITE/UNFAVORITE POST --- GET '''
 class FavoriteView(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     def get(self, request, format=None, post_id=None):
         post = Post.objects.get(pk=post_id)
         user = self.request.user
