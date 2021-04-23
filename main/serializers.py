@@ -1,9 +1,9 @@
-
 from rest_framework import serializers
 from .models import Post, Comment, Rating
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
+
 
 class AuthorSerializer(serializers.ModelSerializer):
     """Serializer for object author info"""
@@ -83,13 +83,11 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_rated_by_req_user(self, obj):
         user = self.context['request'].user
-        print(obj)
         rating = Rating.objects.filter(post=obj, user=user)
         if rating:
             return True
         else:
             return False
-
 
 
 class RatingSerializer(serializers.ModelSerializer):
@@ -101,7 +99,6 @@ class RatingSerializer(serializers.ModelSerializer):
 
     def validate_user(self, obj):
         user = self.context['request'].user
-        print(user)
         if user in obj.ratings:
             raise serializers.ValidationError('You have already rated the post')
         return obj
@@ -115,39 +112,5 @@ class RatingSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['user'] = instance.user.username
-        # representation['post'] = instance.post.id
         representation['rating'] = instance.rating
         return representation
-
-
-
-
-
-
-
-    # def create(self, validated_data):
-    #     request = self.context.get('request')
-    #     user = request.user
-    #     post = validated_data.get('movie')
-    #     rat = validated_data.get('rating')
-    #     rating = Rating.objects.get_or_create(user=user, movie=movie)[0]
-    #     rating.rating = rat
-    #     rating.save()
-    #     return rating
-
-    # def get_fields(self):
-    #     fields = super().get_fields()
-    #     action = self.context.get('action')
-    #     if action == 'create':
-    #         fields.pop('user')
-    #     return fields
-
-    # def create(self, validated_data):
-    #     request = self.context.get('request')
-    #     user = request.user
-    #     post = validated_data.get('post')
-    #     rat = validated_data.get('rating')
-    #     rating = Rating.objects.get_or_create(user=user, post=post)[0]
-    #     rating.rating = rat
-    #     rating.save()
-    #     return rating

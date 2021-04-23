@@ -99,8 +99,6 @@ class UserProfileView(generics.RetrieveAPIView):
 
 
 '''FOLLOW/UNFOLLOW ---GET '''
-
-
 # 'api/account/<slug:username>/follow/'
 # username = to_user
 class FollowUserView(APIView):
