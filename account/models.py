@@ -76,10 +76,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             return 0
 
     def create_activation_code(self):
-        # 1. hashlib.md5(self.email + str(self.id)).encode() ->hexdigest()
-        # 2. get_random_string(50, allowed_char=['']
-        # 3. UUID
-        # 4. datetime.datetime.now() or time.time() + timestamp()
         import hashlib
         string = self.email + str(self.id)
         encode_string = string.encode()

@@ -20,7 +20,6 @@ python manage.py runserver
 '''
 
 @shared_task
-# do some heavy stuff
 def crawl_images():
     print('Crawling data and creating objects in database ..')
     req = Request('https://ohcat.ru/gallery.html', headers={'User-Agent': 'Mozilla/5.0'})
@@ -46,6 +45,7 @@ def update_images():
         data = {'image_url': image}
         CatImages.objects.filter(image_url=image).update(**data)
         sleep(3)
+
 # Run this function if database is empty
 if not CatImages.objects.all():
     crawl_images()

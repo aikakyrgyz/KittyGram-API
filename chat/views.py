@@ -1,11 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.shortcuts import render, HttpResponse, redirect
 from rest_framework.generics import get_object_or_404
-
-from .models import User, Messages
-from django.views.decorators.csrf import csrf_exempt
-from django.http.response import JsonResponse
-from rest_framework.parsers import JSONParser
+from .models import Messages
 from chat.serializers import MessageSerializer, ViewSentMessageSerializer, ViewReceivedMessageSerializer
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly

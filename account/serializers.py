@@ -161,10 +161,6 @@ class CreateNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=6, required=True)
     password_confirm = serializers.CharField(min_length=6, required=True)
 
-    #todo:validate password and similiarity
-    #todo: validate activation code
-    #todo: validate email
-
     def validate_email(self, email):
         if not User.objects.filter(email=email).exists():
             raise serializers.ValidationError('User with given email does not exist')

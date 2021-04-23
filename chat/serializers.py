@@ -4,9 +4,6 @@ from .models import Messages, User
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    # sender_name = serializers.SlugRelatedField(many=False, slug_field='username', queryset=User.objects.all())
-    # receiver_name = serializers.SlugRelatedField(many=False, slug_field='username', queryset=User.objects.all())
-
     class Meta:
         model = Messages
         fields = ['sender_name', 'receiver_name', 'description', 'time']
@@ -18,6 +15,7 @@ class MessageSerializer(serializers.ModelSerializer):
         representation['receiver_name'] = instance.receiver_name.email
         return representation
 
+
 class ViewSentMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Messages
@@ -27,6 +25,7 @@ class ViewSentMessageSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['receiver_name'] = instance.receiver_name.email
         return representation
+
 
 class ViewReceivedMessageSerializer(serializers.ModelSerializer):
     class Meta:

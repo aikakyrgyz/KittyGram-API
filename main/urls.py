@@ -3,7 +3,6 @@ from rest_framework.routers import DefaultRouter
 from .views import *
 router = DefaultRouter()
 router.register('', PostViewSet)
-# app_name = 'post'
 
 urlpatterns = [
     path('feed/', UserFeedView.as_view(), name='feed'),

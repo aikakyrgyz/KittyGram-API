@@ -3,7 +3,6 @@ import uuid
 from django.conf import settings
 from account.models import image_file_path
 from account.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Post(models.Model):
@@ -30,18 +29,6 @@ class Post(models.Model):
                                        related_name='favoriters',
                                        blank=True,
                                        symmetrical=False)
-    # average_rating = models.IntegerField(default=0)
-    #
-    # def calculate_ave_rating(self):
-    #     num_rating = len(Rating.objects.filter(post=self))
-    #     sum=0
-    #     ratings = Rating.objects.filter(self)
-    #     for rating in ratings:
-    #         sum += rating
-    #         if len(ratings > 0):
-    #             self.average_rating = sum // len(rating)
-    #         else:
-    #             self.average_rating = 0
 
     class Meta:
         ordering = ['-posted_on']
@@ -80,11 +67,6 @@ class Rating(models.Model):
 
     def __str__(self):
         return str(self.post)+"---"+str(self.user)
-
-
-from urllib.request import urlopen
-from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
 
 
 class CatImages(models.Model):
