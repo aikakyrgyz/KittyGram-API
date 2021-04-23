@@ -1,7 +1,7 @@
 from rest_framework import permissions, viewsets, generics, status
-from .serializers import PostSerializer, CommentSerializer, AuthorSerializer, RatingSerializer
+from .serializers import PostSerializer, CommentSerializer, AuthorSerializer, RatingSerializer, CatImagesSerializer
 from account.views import FollowersLikersPagination
-from .models import Post, Comment, Rating
+from .models import Post, Comment, Rating, CatImages
 from .permissions import IsOwnerOrReadOnly, IsOwnerOrPostOwnerOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -196,3 +196,7 @@ class RatingViewSet(generics.CreateAPIView):
         else:
             return Response('You have already rated this post', status=status.HTTP_403_FORBIDDEN)
 
+
+class CatImagesView(generics.ListAPIView):
+    queryset = CatImages.objects.all()
+    serializer_class = CatImagesSerializer

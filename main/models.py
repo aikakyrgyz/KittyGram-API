@@ -80,3 +80,12 @@ class Rating(models.Model):
 
     def __str__(self):
         return str(self.post)+"---"+str(self.user)
+
+
+from urllib.request import urlopen
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+
+
+class CatImages(models.Model):
+    image_url = models.URLField(blank=True, null=True)

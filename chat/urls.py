@@ -1,8 +1,8 @@
 from django.urls import path, include
-from . import views
+from .views import SendMessage, SentViewMessage, ReceivedViewMessage
 
 urlpatterns = [
-    path("<slug:username>/", views.chat, name="chat"),
-    path('api/messages/<int:sender>/<int:receiver>', views.message_list, name='message-detail'),
-    path('api/messages', views.message_list, name='message-list'),
+    path("message/<slug:username>/", SendMessage.as_view(), name="chat"),
+    path('view-messages-sent/', SentViewMessage.as_view()),
+    path('view-messages-received/', ReceivedViewMessage.as_view())
 ]

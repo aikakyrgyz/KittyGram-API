@@ -143,7 +143,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 9,
+    'PAGE_SIZE': 20,
     # 'DEFAULT_PERMISSION_CLASSES': (
     #     'rest_framework.permissions.IsAuthenticated',
     # ),
@@ -155,6 +155,7 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_WHITELIST = ('localhost:3000',)
+CELERY_BROKER_URL = 'amqp://localhost'
 
 #email confirmation
 

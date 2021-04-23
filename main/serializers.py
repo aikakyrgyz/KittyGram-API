@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Comment, Rating
+from .models import Post, Comment, Rating, CatImages
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
@@ -114,3 +114,9 @@ class RatingSerializer(serializers.ModelSerializer):
         representation['user'] = instance.user.username
         representation['rating'] = instance.rating
         return representation
+
+
+class CatImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatImages
+        fields = '__all__'
